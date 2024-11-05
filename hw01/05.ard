@@ -1,0 +1,9 @@
+\open Nat \hiding (-, div)
+
+\func \infixr 8 ^ (x y : Nat) : Nat
+  | x, zero => 1
+  | x, suc y => x * (x ^ y)
+
+\func fac (x : Nat) : Nat
+  | zero => 1
+  | suc x => suc x * fac x

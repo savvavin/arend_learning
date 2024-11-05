@@ -1,0 +1,9 @@
+\data Bool
+  | true
+  | false
+
+\func if (x t e : Bool) : Bool
+  | true, t, e => t
+  | false, t, e => e
+
+\func \infixr 2 || (x y : Bool) : Bool => if x x y

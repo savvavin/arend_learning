@@ -1,0 +1,8 @@
+\func f1 (x y : Nat) => x
+\func f2 : Nat => 0
+\func \infix 2 f3 (f : Nat -> Nat) (z : Nat) : Int => 0
+\func f4 : Nat => 0
+\func \infix 5 f5 => f1
+\func f6 => f4
+
+\func test => f1 f2 f3 f4 f5 f6

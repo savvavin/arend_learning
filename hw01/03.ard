@@ -1,5 +1,7 @@
-\func sym {A : \Type} {a aa : A} (p : a = aa) : aa = a
-  | idp => idp
+\data Bool
+  | true
+  | false
 
-\func trans {A : \Type} {a aa aaa : A} (p : a = aa) (q : aa = aaa) : a = aaa
-  | idp, idp => idp
+\func if (x t e : Bool) : Bool
+  | true, t, e => t
+  | false, t, e => e

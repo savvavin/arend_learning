@@ -2,15 +2,23 @@
   | true
   | false
 
-\func and (x y : Bool) : Bool
+\func \infixl 9 and (x y : Bool) : Bool
   | true, true => true
   | _, _ => false
 
-\func eq (x y : Bool) : Bool
-  | true, true => true
-  | false, false => true
-  | _, _ => false
+\func com_and (x y : Bool) : (x and y) = (y and x) \elim x, y
+  | true, true => idp
+  | true, false => idp
+  | false, true => idp
+  | false, false => idp
 
-\func com_and (x y : Bool) : Bool => eq (and x y) (and y x)
-
-\func assoc_and (x y z : Bool) : Bool => eq (and x (and y z)) (and (and x y) z)
+\func assoc_and (x y z : Bool) : ((x and y) and z) = (x and (y and z)) \elim x, y, z
+  | true, true, true => idp
+  | true, true, false => idp
+  | true, false, true => idp
+  | true, false, false => idp
+  | false, true, true => idp
+  | false, true, false => idp
+  | false, false, true => idp
+  | false, false, false => idp
+  

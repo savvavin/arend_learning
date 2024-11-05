@@ -1,0 +1,5 @@
+\func sym {A : \Type} {a aa : A} (p : a = aa) : aa = a
+  | idp => idp
+
+\func trans {A : \Type} {a aa aaa : A} (p : a = aa) (q : aa = aaa) : a = aaa
+  | idp, idp => idp

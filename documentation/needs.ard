@@ -1,0 +1,72 @@
+\open Nat \hiding (-, div)
+
+-- second coordinate
+\func second (_ y _ : Nat) : Nat => y
+
+-- f(x)
+\func apply (f : Nat -> Nat) (x : Nat) : Nat => f x
+
+-- compose functions
+\func compose (f g : Nat -> Nat) (x : Nat) : Nat => f (g x)
+
+-- flip function`s arguments
+\func flip (f : Nat -> Nat -> Nat) (x y : Nat) : Nat => f y x
+
+\func second' : Nat -> Nat -> Nat => flip (second zero)
+
+-- Bool type
+\data Bool
+  | true
+  | false
+
+-- not x
+\func not (x : Bool) : Bool
+  | true => false
+  | false => true
+
+-- if x then t else e
+\func if {A : \Type} (x : Bool) (t e : A) : A
+  | true, t, e => t
+  | false, t, e => e
+
+-- x or y
+\func \infixr 2 || (x y : Bool) : Bool => if x x y
+
+-- pow(x, y)
+\func \infixr 8 ^ (x y : Nat) : Nat
+  | x, zero => 1
+  | x, suc y => x * (x ^ y)
+
+-- x!
+\func fac (x : Nat) : Nat
+  | zero => 1
+  | suc x => suc x * fac x
+
+-- just x < y
+\func \infixr 3 < (x y : Nat) : Bool
+  | 0, 0 => false
+  | suc x, 0 => false
+  | 0, suc y => true
+  | suc x, suc y => x < y
+
+-- max(0, x - y)
+\func \infixr 4 - (x y : Nat) : Nat
+  | x, 0 => x
+  | 0, _ => 0
+  | suc x, suc y => x - y
+
+-- help to mod
+\func mod1 (a b c : Nat) : Nat
+  | zero, b, c => zero
+  | suc a, b, c => if (b < c) b (mod1 a (b - c) c)
+
+-- mod x y
+\func \infix 8 mod (x y : Nat) => mod1 x x y
+
+-- help gcd
+\func gcd1 (a b c : Nat) : Nat
+  | zero, b, c => zero
+  | suc a, b, c => if (b < c) (gcd1 a b (c - b)) (if (c < b) (gcd1 a (b - c) c) b)
+
+-- gcd x y
+\func \infix 8 gcd (x y : Nat) => gcd1 x x y

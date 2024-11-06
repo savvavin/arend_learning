@@ -88,3 +88,21 @@
 \func \infix 6 ++ {A : \Type} (xs ys : List A) : List A \elim xs
   | nil => ys
   | cons x xs => cons x (xs ++ ys)
+
+-- map
+\func map {A B : \Type} (f : A -> B) (list : List A) : List B \elim list
+  | nil => nil
+  | cons x xs => cons (f x) (map f xs)
+
+-- length of list
+\func len {A : \Type} (list : List A) : Nat
+  | nil => zero
+  | cons x xs => suc (len xs)
+
+-- help reverse
+\func reverse1 {A : \Type} (l list : List A) : List A \elim list
+  | nil => l
+  | cons x xs => reverse1 (cons x l) xs
+
+-- reverse list
+\func reverse {A : \Type} (list : List A) => reverse1 nil list

@@ -6,7 +6,7 @@
   | true
   | false
 
-\func if (x : Bool) (t e : Nat) : Nat
+\func if {A : \Type} (x : Bool) (t e : A) : A
   | true, t, e => t
   | false, t, e => e
 
@@ -21,15 +21,11 @@
   | 0, _ => 0
   | suc x, suc y => x - y
 
-\func mod1 (x y : Nat) : Nat
-  | x, zero => x
-  | zero, y => zero
-  | suc x, suc y => mod1 (if (x < y) x (x - y)) y
+\func mod1 (a b c : Nat) : Nat
+  | zero, b, c => zero
+  | suc a, b, c => if (b < c) b (mod1 a (b - c) c)
 
-\func mod (x y : Nat) : Nat
-  | x, zero => x
-  | zero, suc _ => zero
-  | suc x, suc y => mod1 (suc x) (suc y)
+\func mod (x y : Nat) => mod1 x x y
 
 \func gcd1 (a b c : Nat) : Nat
   | zero, b, c => zero

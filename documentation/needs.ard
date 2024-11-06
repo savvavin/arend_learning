@@ -55,6 +55,14 @@
   | 0, _ => 0
   | suc x, suc y => x - y
 
+-- help div
+\func div' (s x y : Nat) : Nat \elim s
+  | zero => zero
+  | suc s => if (x < y) 0 (suc (div' s (x - y) y))
+
+-- a / b
+\func \infix 7 div (x y : Nat) => div' x x y
+
 -- help to mod
 \func mod1 (a b c : Nat) : Nat
   | zero, b, c => zero
@@ -70,3 +78,13 @@
 
 -- gcd x y
 \func \infix 8 gcd (x y : Nat) => gcd1 x x y
+
+-- List type
+\data List (A : \Type)
+  | nil
+  | cons A (List A)
+
+-- append
+\func \infix 6 ++ {A : \Type} (xs ys : List A) : List A \elim xs
+  | nil => ys
+  | cons x xs => cons x (xs ++ ys)

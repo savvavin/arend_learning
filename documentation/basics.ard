@@ -9,3 +9,20 @@
 -- Exercise 7: Define the transpose function. It takes a list of lists considered as a matrix
 -- and returns a list of lists which represents the transposed matrix.
 
+\data Help (A : \Type)
+  | yes A
+  | no
+
+\func select_n {A : \Type} (n : Nat) (list : List A) : Help A
+  | n, nil => no
+  | zero, cons x xs => yes x
+  | suc n, cons x xs => select_n n xs
+
+\func column_n {A : \Type} (list : List (List A)) (n : Nat) : List (Help A) =>
+  map (select_n n) list
+
+\func transpose1 {A : \Type} (list : List (List A)) (n : Nat) : List (List (Help A)) \elim n
+  | zero => nil
+  | suc n => cons (column_n list (suc n)) (transpose1 list n)
+
+\func transpose {A : \Type} (list : List (List A)) => reverse (transpose1 list (len list))

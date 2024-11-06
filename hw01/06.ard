@@ -25,10 +25,10 @@
   | zero, b, c => zero
   | suc a, b, c => if (b < c) b (mod1 a (b - c) c)
 
-\func mod (x y : Nat) => mod1 x x y
+\func \infix 8 mod (x y : Nat) => mod1 x x y
 
 \func gcd1 (a b c : Nat) : Nat
   | zero, b, c => zero
   | suc a, b, c => if (b < c) (gcd1 a b (c - b)) (if (c < b) (gcd1 a (b - c) c) b)
 
-\func gcd (x y : Nat) => gcd1 x x y
+\func \infix 8 gcd (x y : Nat) => gcd1 x x y

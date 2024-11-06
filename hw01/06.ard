@@ -1,0 +1,38 @@
+-- 7. Определите mod и gcd.
+
+\open Nat \hiding (-, div)
+
+\data Bool
+  | true
+  | false
+
+\func if (x : Bool) (t e : Nat) : Nat
+  | true, t, e => t
+  | false, t, e => e
+
+\func \infixr 3 < (x y : Nat) : Bool
+  | 0, 0 => false
+  | suc x, 0 => false
+  | 0, suc y => true
+  | suc x, suc y => x < y
+
+\func \infixr 4 - (x y : Nat) : Nat
+  | x, 0 => x
+  | 0, _ => 0
+  | suc x, suc y => x - y
+
+\func mod1 (x y : Nat) : Nat
+  | x, zero => x
+  | zero, y => zero
+  | suc x, suc y => mod1 (if (x < y) x (x - y)) y
+
+\func mod (x y : Nat) : Nat
+  | x, zero => x
+  | zero, suc _ => zero
+  | suc x, suc y => mod1 (suc x) (suc y)
+
+\func gcd1 (a b c : Nat) : Nat
+  | zero, b, c => zero
+  | suc a, b, c => if (b < c) (gcd1 a b (c - b)) (if (c < b) (gcd1 a (b - c) c) b)
+
+\func gcd (x y : Nat) => gcd1 x x y

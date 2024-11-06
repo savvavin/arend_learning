@@ -1,0 +1,11 @@
+\import needs
+
+-- Exercise 6: Define the map function.
+
+\func map {A B : \Type} (f : A -> B) (list : List A) : List B \elim list
+  | nil => nil
+  | cons x xs => cons (f x) (map f xs)
+
+-- Exercise 7: Define the transpose function. It takes a list of lists considered as a matrix
+-- and returns a list of lists which represents the transposed matrix.
+

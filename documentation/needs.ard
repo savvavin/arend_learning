@@ -84,6 +84,9 @@
   | nil
   | cons A (List A)
 
+-- to simple writing lists --- 1 :: 2 :: 3 :: nil
+\func \infixr 5 :: {A : \Type} (x : A) (xs : List A) => cons x xs
+
 -- append
 \func \infix 6 ++ {A : \Type} (xs ys : List A) : List A \elim xs
   | nil => ys

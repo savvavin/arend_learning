@@ -21,8 +21,15 @@
 \func column_n {A : \Type} (list : List (List A)) (n : Nat) : List (Help A) =>
   map (select_n n) list
 
+\func without_help' {A : \Type} (list : List (Help A)) : List A
+  | nil => nil
+  | cons no xs => without_help' xs
+  | cons (yes x) xs => cons x (without_help' xs)
+
+\func without_help {A : \Type} (list : List (List (Help A))) : List (List A) => map without_help' list
+
 \func transpose1 {A : \Type} (list : List (List A)) (n : Nat) : List (List (Help A)) \elim n
   | zero => nil
   | suc n => cons (column_n list (suc n)) (transpose1 list n)
 
-\func transpose {A : \Type} (list : List (List A)) => reverse (transpose1 list (len list))
+\func transpose {A : \Type} (list : List (List A)) : List (List A) => reverse (without_help (transpose1 list (len list)))

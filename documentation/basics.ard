@@ -9,27 +9,35 @@
 -- Exercise 7: Define the transpose function. It takes a list of lists considered as a matrix
 -- and returns a list of lists which represents the transposed matrix.
 
-\data Help (A : \Type)
-  | yes A
-  | no
-
-\func select_n {A : \Type} (n : Nat) (list : List A) : Help A
-  | n, nil => no
-  | zero, cons x xs => yes x
-  | suc n, cons x xs => select_n n xs
-
-\func column_n {A : \Type} (list : List (List A)) (n : Nat) : List (Help A) =>
-  map (select_n n) list
-
-\func without_help' {A : \Type} (list : List (Help A)) : List A
+\func help1 {A : \Type} (list : List (List A)) : List A
   | nil => nil
-  | cons no xs => without_help' xs
-  | cons (yes x) xs => cons x (without_help' xs)
+  | cons x xs => \case x \with {
+    | nil => help1 xs
+    | cons a b => a :: help1 xs
+  }
 
-\func without_help {A : \Type} (list : List (List (Help A))) : List (List A) => map without_help' list
+\func help2 {A : \Type} (list : List (List A)) : List (List A)
+  | nil => nil
+  | cons x xs => \case x \with {
+    | nil => help2 xs
+    | cons a b => b :: help2 xs
+  }
 
-\func transpose1 {A : \Type} (list : List (List A)) (n : Nat) : List (List (Help A)) \elim n
-  | zero => nil
-  | suc n => cons (column_n list (suc n)) (transpose1 list n)
+\func transpose' {A B : \Type} (list1 : List B) (list2 : List (List A)) : List (List A) \elim list1
+  | nil => nil
+  | cons a as => \case list2 \with {
+    | nil => nil
+    | cons nil xss => transpose' as xss
+    | cons (cons x xs) xss => (x :: help1 xss) :: transpose' as (xs :: help2 xss)
+  }
 
-\func transpose {A : \Type} (list : List (List A)) : List (List A) => reverse (without_help (transpose1 list (len list)))
+\func transpose {A : \Type} (list : List (List A)) => transpose' list list
+
+-- check
+\func lx : List (List Nat) => (1 :: 2 :: nil) :: (3 :: 4 :: nil) :: nil
+\func ly : List (List Nat) => (1 :: 2 :: nil) :: (3 :: 4 :: nil) :: (5 :: 6 :: nil) :: nil
+\func check : transpose lx = ((1 :: 3 :: nil) :: (2 :: 4 :: nil) :: nil) => idp
+\func check' : transpose ly = ((1 :: 3 :: 5 :: nil) :: (2 :: 4 :: 6 :: nil) :: nil) => idp
+\func a : List (List Nat) => ((1 :: 2 :: nil) :: nil)
+\func b : List (List Nat) => ((1 :: nil) :: (2 :: nil) :: nil)
+\func check'' : transpose a = b => idp

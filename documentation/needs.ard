@@ -30,7 +30,7 @@
   | false, t, e => e
 
 -- x or y
-\func \infixr 2 || (x y : Bool) : Bool => if x x y
+--\func \infixr 2 || (x y : Bool) : Bool => if x x y
 
 -- pow(x, y)
 \func \infixr 8 ^ (x y : Nat) : Nat
@@ -109,3 +109,31 @@
 
 -- reverse list
 \func reverse {A : \Type} (list : List A) => reverse1 nil list
+
+-- &&
+\func \infixr 3 && (P Q : \Type) => \Sigma P Q
+
+-- This function proves that P -> Q -> (P && Q)
+\func &&-intro {P Q : \Type} (p : P) (q : Q) : \Sigma P Q => (p, q)
+
+-- This function proves that (P && Q) -> P
+\func &&-elim1 {P Q : \Type} (t : \Sigma P Q) : P => t.1
+
+-- This function proves that (P && Q) -> Q
+\func &&-elim2 {P Q : \Type} (t : \Sigma P Q) : Q => t.2
+
+-- ||
+\data \infixr 2 || (P Q : \Type)
+  | inl P
+  | inr Q
+
+-- This function proves that P -> (P || Q)
+\func ||-intro1 {P Q : \Type} (p : P) : P || Q => inl p
+
+-- This function proves that Q -> (P || Q)
+\func ||-intro2 {P Q : \Type} (q : Q) : P || Q => inr q
+
+-- This function proves that (P -> R) -> (Q -> R) -> (P || Q) -> R
+\func ||-elim {P Q R : \Type} (l : P -> R) (r : Q -> R) (x : P || Q) : R \elim x
+  | inl p => l p
+  | inr q => r q

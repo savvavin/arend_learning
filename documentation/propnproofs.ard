@@ -1,0 +1,25 @@
+\import needs
+
+-- Exercise 1: Prove that (P -> Q -> R) -> (P -> Q) -> P -> R.
+\func p1 {P Q R : \Type} : (P -> Q -> R) -> (P -> Q) -> P -> R =>
+  \lam pqr pq p => pqr p (pq p)
+
+-- Exercise 2: Prove that ((P -> Q -> R) -> P) -> (P -> R) -> R.
+\func p2 {P Q R : \Type} : ((P -> Q -> R) -> P) -> (P -> R) -> R =>
+  \lam pqrp pr => pr (pqrp (\lam p x => pr p))
+
+-- Exercise 3: Prove that ((P && Q) -> R) -> P -> Q -> R.
+\func p3 {P Q R : \Type} : ((P && Q) -> R) -> P -> Q -> R =>
+  \lam pnqr p q => pnqr (p, q)
+
+-- Exercise 4: Prove that (P -> Q -> R) -> (P && Q) -> R.
+\func p4 {P Q R : \Type} : (P -> Q -> R) -> (P && Q) -> R =>
+  \lam pqr pnq => pqr pnq.1 pnq.2
+
+-- Exercise 5: Prove that (P -> R) -> (Q -> R) -> P || Q -> R.
+\func p5 {P Q R : \Type} : (P -> R) -> (Q -> R) -> P || Q -> R => ||-elim
+
+-- Exercise 6: Prove that ((P || Q) -> (P && Q)) -> ((P -> Q) && (Q -> P)).
+\func p6 {P Q : \Type} : ((P || Q) -> (P && Q)) -> ((P -> Q) && (Q -> P)) =>
+  \lam pxqpnq => (\lam p => (pxqpnq (inl p)).2, \lam q => (pxqpnq (inr q)).1)
+

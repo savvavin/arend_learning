@@ -19,6 +19,13 @@
   | true
   | false
 
+-- empty data
+\data Empty
+
+-- unit data
+\data Unit
+  | unit
+
 -- not x
 \func not (x : Bool) : Bool
   | true => false

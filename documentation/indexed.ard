@@ -57,3 +57,43 @@
   | 0 => fnil
   | suc n => push (toFin n) (map2 help (res n))
 
+-- Exercise 6: Define the type of matrices and a number of functions for them: the diagonal matrix, transpose, addition and multiplication of matrices.
+
+\func Matrix (A : \Type) (a b : Nat) => Vec (Vec A a) b
+
+\func diagonal {n : Nat} (v : Vec Nat n) : Matrix Nat n n
+  | {0}, fnil => fnil
+  | {suc n}, fcons a v =>
+    \let
+      | x => (::: nil) (diagonal v)
+      | new => a :: replicate2 0 n
+    \in new ::: x
+
+\func transpose {A : \Type} {n m : Nat} (xss : Matrix A n m) : Matrix A m n \elim n, m, xss
+  | 0, 0, fnil => fnil
+  | 0, suc m, fcons a v => fnil
+  | suc n, 0, fnil => replicate2 fnil (suc n)
+  | suc n, suc m, fcons (fcons x xs) xss => (x ::: map Head xss) ::: (transpose (xs ::: map Tail xss))
+
+\func \infixl 6 + {n m : Nat} (xss : Matrix Nat n m) (yss : Matrix Nat n m) : Matrix Nat n m
+  | {_}, {0}, _, _ => fnil
+  | {0}, {m}, _, _ => replicate2 fnil m
+  | {suc n}, {suc m}, fcons xs xss, fcons ys yss => zip2 (Nat.+) xs ys ::: xss + yss
+
+-- Exercise 7: Define the type CTree A n of (complete and full) binary trees of height precisely n, which store elements in internal nodes, but not in leaves. The height of a leaf is 0.
+-- убрал в комментарий чтобы названия не менять
+--\data CTree (A : \Type) (n : Nat) \elim n
+--  | zero => leaf
+--  | suc n => node A (CTree A n) (CTree A n)
+
+-- Exercise 8: Define the type Tree A n of binary trees of height at most n, which store elements in internal nodes, but not in leaves. The height of a leaf is 0. Define the function that computes the height of a tree.
+
+\data Tree (A : \Type) {n : Nat} (f : Fin n) \elim n, f
+  | suc n, fzero => leaf
+  | suc n, fsuc f => node A {lea : Fin n} (l : Tree A lea) {rf : Fin n} (r : Tree A rf)
+
+\func max (l : Nat) (r : Nat) : Nat => if (l < r) r l
+
+\func height {A : \Type} {n : Nat} {f : Fin n} (t : Tree A f): Nat \elim n, f, t
+  | suc n, fzero, leaf => 0
+  | suc n, fsuc f, node a l r => suc (max (height l) (height r))

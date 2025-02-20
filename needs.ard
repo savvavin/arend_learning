@@ -1,0 +1,199 @@
+\open Nat \hiding (-, div)
+
+-- second coordinate
+\func second (_ y _ : Nat) : Nat => y
+
+-- f(x)
+\func apply (f : Nat -> Nat) (x : Nat) : Nat => f x
+
+-- compose functions
+\func compose (f g : Nat -> Nat) (x : Nat) : Nat => f (g x)
+
+-- flip function`s arguments
+\func flip (f : Nat -> Nat -> Nat) (x y : Nat) : Nat => f y x
+
+\func second' : Nat -> Nat -> Nat => flip (second zero)
+
+-- Bool type
+\data Bool
+  | true
+  | false
+
+-- empty data
+\data Empty
+
+-- unit data
+\data Unit
+  | unit
+
+-- not x
+\func not (x : Bool) : Bool
+  | true => false
+  | false => true
+
+-- if x then t else e
+\func if {A : \Type} (x : Bool) (t e : A) : A
+  | true, t, e => t
+  | false, t, e => e
+
+-- x or y
+--\func \infixr 2 || (x y : Bool) : Bool => if x x y
+
+-- pow(x, y)
+\func \infixr 8 ^ (x y : Nat) : Nat
+  | x, zero => 1
+  | x, suc y => x * (x ^ y)
+
+-- x!
+\func fac (x : Nat) : Nat
+  | zero => 1
+  | suc x => suc x * fac x
+
+-- just x < y
+\func \infixr 3 < (x y : Nat) : Bool
+  | 0, 0 => false
+  | suc x, 0 => false
+  | 0, suc y => true
+  | suc x, suc y => x < y
+
+\func \infixr 3 <= (x y : Nat) : Bool
+  | 0, 0 => true
+  | suc x, 0 => false
+  | 0, suc y => true
+  | suc x, suc y => x <= y
+
+-- max(0, x - y)
+\func \infixr 4 - (x y : Nat) : Nat
+  | x, 0 => x
+  | 0, _ => 0
+  | suc x, suc y => x - y
+
+-- help div
+\func div' (s x y : Nat) : Nat \elim s
+  | zero => zero
+  | suc s => if (x < y) 0 (suc (div' s (x - y) y))
+
+-- a / b
+\func \infix 7 div (x y : Nat) => div' x x y
+
+-- help to mod
+\func mod1 (a b c : Nat) : Nat
+  | zero, b, c => zero
+  | suc a, b, c => if (b < c) b (mod1 a (b - c) c)
+
+-- mod x y
+\func \infix 8 mod (x y : Nat) => mod1 x x y
+
+-- help gcd
+\func gcd1 (a b c : Nat) : Nat
+  | zero, b, c => zero
+  | suc a, b, c => if (b < c) (gcd1 a b (c - b)) (if (c < b) (gcd1 a (b - c) c) b)
+
+-- gcd x y
+\func \infix 8 gcd (x y : Nat) => gcd1 x x y
+
+-- List type
+\data List (A : \Type)
+  | nil
+  | cons A (List A)
+
+-- to simple writing lists --- 1 :: 2 :: 3 :: nil
+\func \infixr 5 :: {A : \Type} (x : A) (xs : List A) => cons x xs
+
+-- append
+\func \infix 6 ++ {A : \Type} (xs ys : List A) : List A \elim xs
+  | nil => ys
+  | cons x xs => cons x (xs ++ ys)
+
+-- map
+\func map {A B : \Type} (f : A -> B) (list : List A) : List B \elim list
+  | nil => nil
+  | cons x xs => cons (f x) (map f xs)
+
+-- length of list
+\func len {A : \Type} (list : List A) : Nat
+  | nil => zero
+  | cons x xs => suc (len xs)
+
+-- help reverse
+\func reverse1 {A : \Type} (l list : List A) : List A \elim list
+  | nil => l
+  | cons x xs => reverse1 (cons x l) xs
+
+-- reverse list
+\func reverse {A : \Type} (list : List A) => reverse1 nil list
+
+-- &&
+\func \infixr 3 && (P Q : \Type) => \Sigma P Q
+
+-- This function proves that P -> Q -> (P && Q)
+\func &&-intro {P Q : \Type} (p : P) (q : Q) : \Sigma P Q => (p, q)
+
+-- This function proves that (P && Q) -> P
+\func &&-elim1 {P Q : \Type} (t : \Sigma P Q) : P => t.1
+
+-- This function proves that (P && Q) -> Q
+\func &&-elim2 {P Q : \Type} (t : \Sigma P Q) : Q => t.2
+
+-- ||
+\data \infixr 2 || (P Q : \Type)
+  | inl P
+  | inr Q
+
+-- This function proves that P -> (P || Q)
+\func ||-intro1 {P Q : \Type} (p : P) : P || Q => inl p
+
+-- This function proves that Q -> (P || Q)
+\func ||-intro2 {P Q : \Type} (q : Q) : P || Q => inr q
+
+-- This function proves that (P -> R) -> (Q -> R) -> (P || Q) -> R
+\func ||-elim {P Q R : \Type} (l : P -> R) (r : Q -> R) (x : P || Q) : R \elim x
+  | inl p => l p
+  | inr q => r q
+
+\func length {A : \Type} (xs : List A) : Nat
+  | nil => 0
+  | cons x xs => suc (length xs)
+
+\func T (b : Bool) : \Type
+  | true => Unit
+  | false => Empty
+
+\func vec (A : \Type) (n : Nat) : \Type \elim n
+  | 0 => \Sigma
+  | suc n => \Sigma A (vec A n)
+
+\func head {A : \Type} (n : Nat) (xs : vec A (suc n)) => xs.1
+
+\func tail {A : \Type} (n : Nat) (xs : vec A (suc n)) => xs.2
+
+\data Vec (A : \Type) (n : Nat) \elim n
+  | 0 => fnil
+  | suc n => fcons A (Vec A n)
+
+\func \infixr 5 ::: {A : \Type} {n : Nat} (x : A) (xs : Vec A n) => fcons x xs
+
+\func Head {A : \Type} {n : Nat} (xs : Vec A (suc n)) : A \elim xs
+  | fcons x _ => x
+
+\func Tail {A : \Type} {n : Nat} (xs : Vec A (suc n)) : Vec A n \elim xs
+  | fcons _ xs => xs
+
+\data Maybe (A : \Type) | nothing | just A
+
+\func first {A : \Type} {n : Nat} (xs : Vec A n) : Maybe A \elim n, xs
+  | 0, fnil => nothing
+  | suc n, fcons x xs => just x
+
+\func append {A : \Type} {n m : Nat} (xs : Vec A n) (ys : Vec A m) : Vec A (m + n) \elim n, xs
+  | 0, fnil => ys
+  | suc _ , fcons x xs => fcons x (append xs ys)
+
+\func fin (n : Nat) => \Sigma (x : Nat) (T (x < n))
+
+\func Fin' (n : Nat) : \Set0
+  | 0 => Empty
+  | suc n => Maybe (Fin' n)
+
+\data Fin (n : Nat) \with
+  | suc n => { fzero | fsuc (Fin n) }

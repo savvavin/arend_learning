@@ -1,0 +1,36 @@
+\import needs
+\open Nat
+
+\func adjacencyMatrix : List (List Nat) =>
+  (0 :: 5 :: 0 :: 9 :: nil)
+    :: (5 :: 0 :: 3 :: 0 :: nil)
+    :: (0 :: 3 :: 0 :: 2 :: nil)
+    :: (9 :: 0 :: 2 :: 0 :: nil)
+    :: nil
+
+-- biggest nuber for dist
+\func inf : Nat => 1000000000
+
+\func map {A B : \Type} (f : A -> B) (xs : List A) : List B \elim xs
+  | nil => nil
+  | cons x xs => cons (f x) (map f xs)
+
+-- reversed list of distances from first vertex
+\func initializeDistances (n : Nat) : List Nat \elim n
+  | zero => nil
+  | 1 => zero :: nil
+  | suc n => inf :: initializeDistances n
+
+-- normal list of distances
+\func initDist (n : Nat) : List Nat => reverse (initializeDistances n)
+
+-- list of used vertexes
+\func used (n : Nat) : List Nat \elim n
+  | zero => nil
+  | 1 => zero :: nil
+  | suc n => zero :: used n
+
+-- test
+\func testInitDist : initDist 4 = (zero :: inf :: inf :: inf :: nil) => idp
+\func testUsed : used 4 = (zero :: zero :: zero :: zero :: nil) => idp
+
